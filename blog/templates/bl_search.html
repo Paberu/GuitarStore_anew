@@ -1,0 +1,42 @@
+{% extends 'blog.html' %}
+{% block title %}
+    <title> Поиск по гитарному блогу </title>
+{% endblock %}
+{% block description %}
+    <meta name="description" content="Поиск по гитарному блогу" />
+{% endblock %}
+{% block keywords %}
+    <meta name="keywords" content="поиск по гитарному блогу, поиск, блог о гитарах, статьи о гитарах" />
+{% endblock %}
+{% block sort %}{% endblock %}
+{% block before_content %}
+<div id="search_result">
+	<h2>Результаты поиска: {{ query }}</h2>
+	{% if not posts %}
+		<p>Ничего не найдено</p>
+	{% endif %}
+</div>
+{% endblock %}
+{% block pagination %}
+	{% if posts.has_other_pages %}
+		<ul class="pagination">
+			{% if posts.has_previous %}
+				<li><a href="{{ request.path }}?query={{ query }}&amp;page={{ posts.previous_page_number }}">Назад</a></li>
+			{% else %}
+				<li>Назад</li>
+			{% endif %}
+			{% for i in posts.paginator.page_range %}
+				{% if posts.number == i %}
+					<li class="current">{{ i }}</li>
+				{% else %}
+					<li><a href="{{ request.path }}?query={{ query }}&amp;page={{ i }}">{{ i }}</a></li>
+				{% endif %}
+			{% endfor %}
+			{% if posts.has_next %}
+				<li><a href="{{ request.path }}?query={{ query }}&amp;page={{ posts.next_page_number }}">Вперёд</a></li>
+			{% else %}
+				<li>Вперёд</li>
+			{% endif %}
+		</ul>
+	{% endif %}
+{% endblock %}

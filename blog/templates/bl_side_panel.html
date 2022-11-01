@@ -1,0 +1,30 @@
+<div class="col-md-3 sidebar">
+	<h5>Поиск по блогу</h5>
+	<div class="search">
+	  <form>
+		<input type="text" value="Введите строку поиска..." onfocus="this.value='';" onblur="if (this.value == '') {this.value ='';}">
+		<input type="submit" value="">
+	  </form>
+	</div>
+	<div class="sidebar-bottom">
+		<h5>Архив</h5>
+		<ul>
+			{% for filter in filters %}
+				<li><a href="{% url 'blog' %}{{ filter.month_n_year }}">{{ filter.display_date }}</a></li>
+			{% endfor %}
+		</ul>
+	</div>
+	<div class="sidebar-last">
+		<h5>Галерея</h5>
+		{% for small_image in random_small_images %}
+			{% cycle '<ul>' '' '' %}
+				<li><a href="{{ SMALL_MEDIA_URL }}{{ small_image.image.url }}"><img src="{{ SMALL_MEDIA_URL }}{{ small_image.image.url }}" alt="" ></a></li>
+			{% if forloop.last %}
+				</ul>
+			{% else %}
+				{% cycle '' '' '</ul>' %}
+			{% endif %}
+		{% endfor %}
+	</div>
+</div>
+<div class="clearfix"> </div>

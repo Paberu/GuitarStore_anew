@@ -1,0 +1,36 @@
+{% extends 'blog.html' %}
+{% block title %} {{ post.title }} {% endblock %}
+{% block post_content %}
+    <div class="blog-left single-left">
+        {% load blog_filters %}
+        <h4> {{ post.title }} </h4>
+        <img src="images/b3.jpg" alt="" />
+        {% if post.subtitle %}
+            <h5> {{ post.subtitle }} </h5>
+        {% endif %}
+        <p class="likes"> {{ post.date_time|blog_date_time }} / {{ comments_total }}</p>
+        <p> {{ post.full_text }} </p>
+    </div>
+    <div class="single-grids">
+        <h2>Комментарии ({{ comments_total }})</h2>
+        {% for comment in comments %}
+        <div class="single-comment">
+            <div class="col-md-10 single-comment-right">
+                <h6><b> {{ comment.date_time }} / {{ comment.author }}</b></h6>
+                <p>{{ comment.text }}</p>
+            </div>
+            <div class="clearfix"> </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="single-reply">
+        <h4>Написать комментарий</h4>
+        <form name="post" action="{% url 'blog:post' post.pk %}" method="post">
+            {% csrf_token %}
+            <input name="name" type="text" placeholder="{% if request.session.name %}{{ request.session.name }}{% else %}Имя{% endif %}" required="">
+            <input name="email" class="name" type="text" placeholder="{% if request.session.email %}{{ request.session.email }}{% else %}E-mail{% endif %}" required="">
+            <textarea name="comment" placeholder="Комментарий" required=""></textarea>
+            <input type="submit" value="Отправить">
+        </form>
+    </div>
+{% endblock %}

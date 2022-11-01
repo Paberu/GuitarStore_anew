@@ -1,0 +1,45 @@
+{% extends 'blog_template.html' %}
+{% block title %}
+	<title>Фотографии наших гитар</title>
+{% endblock %}
+{% block description %}
+    <meta name="description" content="Наша гитарная галерея" />
+{% endblock %}
+{% block keywords %}
+	<meta name="keywords" content="гитары, блог гитары" />
+{% endblock %}
+{% block main_div %}
+<div class="gallery">
+{% endblock %}
+{% block content %}
+		<div class="gallery-info">
+			<h3>Наша галерея</h3>
+			<p>Мы вынуждены отталкиваться от того, что убеждённость некоторых оппонентов влечет за собой процесс внедрения и модернизации позиций, занимаемых участниками в отношении поставленных задач.</p>
+		</div>
+		<div class="portfolio-mian">
+			<div class="portfolio-top">
+				{% for photo in photos %}
+					{% cycle '<div class="col-md-3 port-1-left">' '' '' '' %}
+						<div class="portfolio app mix_all" data-cat="app" style="display: inline-block; opacity: 1;">
+							<div class="portfolio-wrapper p-5">
+								<a href="{{ MEDIA_URL }}{{ photo.image.url }}" class="b-link-stripe b-animate-go  swipebox" title="">
+									<img src="{{ MEDIA_URL }}{{ photo.image.url }}">
+									<div class="b-wrapper"><h2 class="b-animate b-from-left prt-1  b-delay03 ">{{ photo.title }}</h2>
+									</div>
+								</a>
+							</div>
+						</div>
+					{% cycle '' '' '' '</div>' %}
+				{% endfor %}
+				<div class="clearfix"></div>
+			</div>
+		</div>
+		{% load static %}
+		<link rel="stylesheet" href="{% static 'styles/swipebox.css' %}">
+		<script src="{% static 'js/jquery.swipebox.min.js' %}"></script>
+		<script type="text/javascript">
+			jQuery(function($) {
+				$(".swipebox").swipebox();
+			});
+		</script>
+{% endblock %}

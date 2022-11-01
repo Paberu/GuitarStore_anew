@@ -1,0 +1,11 @@
+{% extends 'shop.html' %}
+{% block title %}
+    <title> {{ manufacturer.title }}</title>
+{% endblock %}
+{% block description %}
+    <meta name="description" content="Список гитар производства {{ manufacturer.title }}" />
+{% endblock %}
+{% block keywords %}
+    <meta name="keywords" content="список гитар, список гитар модели, список гитар модели {{ manufacturer.title|lower }}" />
+{% endblock %}
+{% block header %}<h3>{{ manufacturer.title }}</h3>{% endblock %}

@@ -1,0 +1,121 @@
+{% extends 'blog_template.html' %}
+{% block title %}
+    <title> Наши контакты </title>
+{% endblock %}
+{% block description %}
+    <meta name="description" content="Наши контакты" />
+{% endblock %}
+{% block keywords %}
+    <meta name="keywords" content="контакты, контакты гитарного магазина" />
+{% endblock %}
+{% block content %}
+   <div class="contact">
+		<!-- container -->
+		<div class="container">
+			<div class="contact-grids">
+				<h3>Наши адреса</h3>
+				<div class="address-grids">
+					<div class="col-md-4 address-text">
+						<div class="address-grid">
+							<h5>пр. Ленина, д. 1,
+								<span>Москва, Россия</span>
+							</h5>
+							<div class="address-info">
+								<div class="address-info-left">
+									<p>Телефон:</p>
+								</div>
+								<div class="address-info-left address-info-right">
+									<p>+7 495 123 45 67</p>
+								</div>
+								<div class="clearfix"> </div>
+							</div>
+							<div class="address-info">
+								<div class="address-info-left">
+									<p>Факс:</p>
+								</div>
+								<div class="address-info-left address-info-right">
+									<p>8-000-1234567</p>
+								</div>
+								<div class="clearfix"> </div>
+							</div>
+							<div class="e-mail">
+								<p>E-mail: <a href="mailto:example@email.com">example@example.com</a></p>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4 address-text">
+						<div class="address-grid">
+							<h5>пр. Ленина, д. 2,
+								<span>Новосибирск, Россия</span>
+							</h5>
+							<div class="address-info">
+								<div class="address-info-left">
+									<p>Телефон:</p>
+								</div>
+								<div class="address-info-left address-info-right">
+									<p>+7 383 123 45 67</p>
+								</div>
+								<div class="clearfix"> </div>
+							</div>
+							<div class="address-info">
+								<div class="address-info-left">
+									<p>Факс:</p>
+								</div>
+								<div class="address-info-left address-info-right">
+									<p>8-000-1234567</p>
+								</div>
+								<div class="clearfix"> </div>
+							</div>
+							<div class="e-mail">
+								<p>E-mail: <a href="mailto:novosibirsk@email.com">novosibirsk@example.com</a></p>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4 address-text">
+						<div class="address-grid">
+							<h5>пр. Ленина, д. 3,
+								<span>Краснодар, Россия</span>
+							</h5>
+							<div class="address-info">
+								<div class="address-info-left">
+									<p>Телефон:</p>
+								</div>
+								<div class="address-info-left address-info-right">
+									<p>+7 861 123 45 67</p>
+								</div>
+								<div class="clearfix"> </div>
+							</div>
+							<div class="address-info">
+								<div class="address-info-left">
+									<p>Факс:</p>
+								</div>
+								<div class="address-info-left address-info-right">
+									<p>8-000-1234567</p>
+								</div>
+								<div class="clearfix"> </div>
+							</div>
+							<div class="e-mail">
+								<p>E-mail: <a href="mailto:krasnodar@email.com">krasnodar@example.com</a></p>
+							</div>
+						</div>
+					</div>
+					<div class="clearfix"> </div>
+				</div>
+				<div class="contact-form">
+					<h3>Связаться с нами</h3>
+					<form>
+						{% csrf_token %}
+						{{ form.client_name }}
+						{{ form.client_email }}
+						{{ form.title }}
+						{{ form.text }}
+						<input type="submit" value="Отправить">
+					</form>
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+		</div>
+		<!-- //container -->
+	</div>
+	<!-- //contact -->
+{% endblock %}
