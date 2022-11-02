@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-from shop.models import SupportMail
+from blog.models import SupportMail
 
 
 class SearchForm(forms.Form):

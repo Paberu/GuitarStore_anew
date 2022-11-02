@@ -119,6 +119,8 @@ class Order(models.Model):
     needs_delivery = models.BooleanField(verbose_name='Необходима доставка')
     discount = models.ForeignKey(Discount, verbose_name='Скидка', on_delete=models.SET_NULL, null=True)
     customer = models.CharField(max_length=100, verbose_name='Клиент')
+    phone = models.CharField(max_length=70, verbose_name='Телефон', default='')
+    email = models.EmailField(default='default@localhost.pi')
     address = models.TextField(verbose_name='Адрес', blank=True)
     notice = models.CharField(max_length=200, blank=True, verbose_name='Примечание пользователя к заказу')
     date_order = models.DateTimeField(auto_now_add=True, verbose_name='Дата и время заказа')
@@ -146,8 +148,8 @@ class Order(models.Model):
 
     def display_total_discount(self):
         total_discount = 0
-        if self.customer.discount:
-            total_discount += self.customer.discount.value
+        # if self.customer.discount:
+        #     total_discount += self.customer.discount.value
         if self.discount:
             total_discount += self.discount.value
         if total_discount > 99:
@@ -168,25 +170,9 @@ class Order(models.Model):
             amount = round(amount * (100 - self.display_total_discount()) / 100)
         return '{0} руб.'.format(amount)
 
-    def display_customer_first_name(self):
-        return self.customer.first_name
-
-    def display_customer_last_name(self):
-        return self.customer.last_name
-
-    def display_customer_phone(self):
-        return self.customer.phone
-
-    def display_customer_email(self):
-        return self.customer.email
-
     display_products.short_description = 'Состав заказа'
     display_amount.short_description = 'Цена заказа'
     display_total_discount.short_description = 'Общий размер скидки'
-    display_customer_first_name.short_description = 'Имя заказчика'
-    display_customer_last_name.short_description = 'Фамилия заказчика'
-    display_customer_phone.short_description = 'Телефон заказчика'
-    display_customer_email.short_description = 'Email заказчика'
 
 
 class OrderLine(models.Model):

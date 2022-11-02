@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.views import generic
 
 from shop.forms import SearchForm, OrderModelForm
-from shop.models import Product, Manufacturer, Section, Discount, Order
+from shop.models import Product, Manufacturer, Section, Discount, Order, OrderLine
 
 
 def shop(request):
@@ -191,34 +191,13 @@ def order(request):
                     order_object.discount = discount
                 except Discount.DoesNotExist:
                     pass
-            email = request.session.get('email', '')
-            if email:
-                pass
-                # try:
-                #     customer = Customer.objects.get(email__exact=email)
-                #     order_object.customer = customer
-                # except Customer.DoesNotExist:
-                #     name = form.cleaned_data['name']
-                #     first_name, last_name = name.split()
-                #     phone = form.cleaned_data['phone']
-                #     email = form.cleaned_data['email']
-                #     try:
-                #         customer_object = Customer()
-                #         customer_object.first_name = first_name
-                #         customer_object.last_name = last_name
-                #         customer_object.phone = phone
-                #         customer_object.email = email
-                #         customer_object.save()
-                #         order_object.customer = customer_object
-                #     except Customer.DoesNotExist:
-                #         raise Http404()
-            else:
-                raise Http404()
+            order_object.customer = form.cleaned_data['name']
+            order_object.phone = form.cleaned_data['phone']
+            order_object.email = form.cleaned_data['email']
             order_object.address = form.cleaned_data['address']
             order_object.notice = form.cleaned_data['notice']
             order_object.save()
             add_order_lines(request, order_object)
-            # add_user(name, email)
             return HttpResponseRedirect(reverse('add_order'))
     else:
         form = OrderModelForm()
@@ -227,7 +206,7 @@ def order(request):
 
 
 def add_order_lines(request, order_object):
-    cart_info = request.session.get('get_cart_info', {})
+    cart_info = request.session.get('cart_info', {})
     for key in cart_info:
         order_line = OrderLine()
         order_line.order = order_object
@@ -240,10 +219,3 @@ def add_order_lines(request, order_object):
 
 def add_order(request):
     return render(request, 'add_order.html')
-#
-# def add_user(name, email):
-#     if User.objects.filter(email=email).exists() or User.objects.filter(username=email).exists():
-#         return
-#
-#     password = User.objects.make_random_password()
-#     user = User.objects.create_user(email, email, password)

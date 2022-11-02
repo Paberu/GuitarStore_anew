@@ -103,13 +103,12 @@ class OrderLineAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    readonly_fields = ('display_total_discount', 'display_customer_first_name', 'display_customer_last_name',
-                       'display_customer_phone', 'display_customer_email', 'date_order')
+    readonly_fields = ('display_total_discount', 'customer',
+                       'phone', 'email', 'date_order')
     list_display = ('id', 'display_products', 'display_total_discount',
                     'display_amount', 'address', 'notice',
                     'date_order', 'date_send', 'status',
-                    'display_customer_first_name', 'display_customer_last_name', 'display_customer_phone',
-                    'display_customer_email')
+                    'customer', 'phone', 'email')
     list_filter = ('status', 'date_order')
     fieldsets = (
         ('Информация о заказе', {

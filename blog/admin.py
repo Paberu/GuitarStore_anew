@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from blog.models import Photo, Comment, Post
+from blog.models import Photo, Comment, Post, SupportMail
 
 admin.site.register(Photo)
 admin.site.register(Comment)
@@ -44,3 +44,27 @@ class PostAdmin(admin.ModelAdmin):
 
     actions_on_bottom = True
     actions_on_top = False
+
+
+class SupportMailFilter(admin.SimpleListFilter):
+    title = 'Статус обработки'
+    parameter_name = 'status'
+
+    def lookups(self, request, model_admin):
+        return SupportMail.STATUSES
+
+    def queryset(self, request, queryset):
+        if not self.value():
+            return queryset
+        status_value = self.value()
+        return queryset.filter(status=status_value)
+
+
+@admin.register(SupportMail)
+class SupportMailAdmin(admin.ModelAdmin):
+    list_display = ('status', 'date_time', 'name', 'title', 'text')
+    list_filter = (SupportMailFilter,)
+    actions_on_bottom = True
+    actions_on_top = False
+    list_per_page = 10
+    search_fields = ('name', 'email')

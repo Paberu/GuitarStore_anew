@@ -48,3 +48,26 @@ class Photo(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class SupportMail(models.Model):
+    title = models.CharField(max_length=100, verbose_name='Заголовок', blank=True)
+    text = models.TextField(verbose_name='Содержимое обращения')
+    date_time = models.DateTimeField(auto_now_add=True, verbose_name='Дата обращения')
+    name = models.CharField(max_length=100, verbose_name='Имя')
+    email = models.EmailField(max_length=100, verbose_name='E-mail')
+
+    STATUSES = (
+        ('WCH', 'Обращение рассмотрено'),
+        ('UNW', 'Обращение нерассмотрено'),
+    )
+
+    status = models.CharField(choices=STATUSES, max_length=3, default='UNW', verbose_name='Статус обращения')
+
+    class Meta:
+        ordering = ['-date_time']
+        verbose_name = 'Обращение'
+        verbose_name_plural = 'Обращения'
+
+    def __str__(self):
+        return 'Клиент {0} обратился {1} с запросом: {2}'.format(self.name, self.date_time.date(), self.title)
