@@ -34,6 +34,7 @@ class Section(models.Model):
         unique=True,
         verbose_name='Название раздела'
     )
+    slug = models.SlugField(max_length=40, verbose_name='Псевдоним', default='')
 
     class Meta:
         ordering = ['title']
@@ -41,7 +42,7 @@ class Section(models.Model):
         verbose_name_plural = 'Разделы'
 
     def get_absolute_url(self):
-        return reverse('section', args=[self.id])
+        return reverse('section', args=[self.slug])
 
     def __str__(self):
         return self.title
@@ -54,6 +55,7 @@ class Manufacturer(models.Model):
         unique=True,
         verbose_name='Название производителя'
     )
+    slug = models.SlugField(max_length=40, verbose_name='Псевдоним', default='')
 
     class Meta:
         ordering = ['title']
@@ -61,7 +63,7 @@ class Manufacturer(models.Model):
         verbose_name_plural = 'Производители'
 
     def get_absolute_url(self):
-        return reverse('manufacturer', args=[self.id])
+        return reverse('manufacturer', args=[self.slug])
 
     def __str__(self):
         return self.title
@@ -74,6 +76,7 @@ class FormFactor(models.Model):
         unique=True,
         verbose_name='Название типа гитары'
     )
+    slug = models.SlugField(max_length=40, verbose_name='Псевдоним', default='')
 
     class Meta:
         ordering = ['title']
@@ -87,6 +90,7 @@ class FormFactor(models.Model):
 class Product(models.Model):
     section = models.ForeignKey(Section, on_delete=models.SET_NULL, null=True, verbose_name='Раздел')
     title = models.CharField(max_length=70, verbose_name='Название товара')
+    slug = models.SlugField(max_length=40, verbose_name='Псевдоним', default='')
     image = models.ImageField(upload_to='images', verbose_name='Изображение')
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Цена')
     manufacturer = models.ForeignKey(Manufacturer, on_delete=models.SET_NULL, null=True, verbose_name='Производитель')
@@ -120,7 +124,7 @@ class Order(models.Model):
     discount = models.ForeignKey(Discount, verbose_name='Скидка', on_delete=models.SET_NULL, null=True)
     customer = models.CharField(max_length=100, verbose_name='Клиент')
     phone = models.CharField(max_length=70, verbose_name='Телефон', default='')
-    email = models.EmailField(default='default@localhost.pi')
+    email = models.EmailField(max_length=70, null=False)
     address = models.TextField(verbose_name='Адрес', blank=True)
     notice = models.CharField(max_length=200, blank=True, verbose_name='Примечание пользователя к заказу')
     date_order = models.DateTimeField(auto_now_add=True, verbose_name='Дата и время заказа')
@@ -142,6 +146,7 @@ class Order(models.Model):
         ordering = ['-date_order']
         verbose_name = 'Заказ'
         verbose_name_plural = 'Заказы'
+        permissions = (('can_set_status', 'Возможность настройки статуса заказа'), )
 
     def __str__(self):
         return 'ID: ' + str(self.id)

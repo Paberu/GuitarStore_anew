@@ -11,12 +11,12 @@
 	<h2>Оформление заказа</h2>
 		<form name="order" action="{% url 'order' %}" method="post">
 			{% csrf_token %}
+			{{ form.non_field_errors }}
 			<table>
-				{{ form.non_field_errors }}
 				<tr>
-					<td class="w120">{{ form.name.label }}</td>
-					<td>{{ form.name }}</td>
-					<td>{{ form.name.errors }}</td>
+					<td class="w120">{{ form.customer.label }}</td>
+					<td>{{ form.customer }}</td>
+					<td>{{ form.customer.errors }}</td>
 				</tr>
 				<tr>
 					<td>{{ form.phone.label }}:</td>

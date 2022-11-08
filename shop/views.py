@@ -1,7 +1,12 @@
+import transliterate
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.models import User, Group
+from django.core.mail import EmailMultiAlternatives
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, get_object_or_404
+from django.template.loader import get_template
 from django.urls import reverse
 from django.views import generic
 
@@ -10,10 +15,43 @@ from shop.models import Product, Manufacturer, Section, Discount, Order, OrderLi
 
 
 def shop(request):
+    # products = Product.objects.all()
+    # for product in products:
+    #     slug = transliterate.translit(product.title, reversed=True)
+    #     slug = slug.replace("'",'')
+    #     slug = slug.replace('?','')
+    #     slug = slug.replace('!','')
+    #     slug = slug.replace(',','')
+    #     slug = slug.replace(' ','-')
+    #     slug = slug.lower()
+    #     product.slug = slug
+    #     product.save()
+    # sections = Section.objects.all()
+    # for section in sections:
+    #     slug = transliterate.translit(section.title, reversed=True)
+    #     slug = slug.replace("'", '')
+    #     slug = slug.replace('?', '')
+    #     slug = slug.replace('!', '')
+    #     slug = slug.replace(',', '')
+    #     slug = slug.replace(' ', '-')
+    #     slug = slug.lower()
+    #     section.slug = slug
+    #     section.save()
+    # manufacturers = Manufacturer.objects.all()
+    # for manufacturer in manufacturers:
+    #     slug = manufacturer.title
+    #     slug = slug.replace("'",'')
+    #     slug = slug.replace('?','')
+    #     slug = slug.replace('!','')
+    #     slug = slug.replace(',','')
+    #     slug = slug.replace('&', '-')
+    #     slug = slug.replace(' ','-')
+    #     slug = slug.lower()
+    #     manufacturer.slug = slug
+    #     manufacturer.save()
     result = prerender(request)
     if result:
         return result
-    # photos = Photo.objects.all().order_by('-date')[:12]
     products = Product.objects.all().order_by(get_order_by_for_products(request))[:8]
     context = {'products': products,}
     return render(request, 'shop.html', context=context)
@@ -46,21 +84,21 @@ def contacts(request):
     return render(request, 'contacts.html')
 
 
-def manufacturer(request, id):
+def manufacturer(request, slug):
     result = prerender(request)
     if result:
         return result
-    current_manufacturer = get_object_or_404(Manufacturer, pk=id)
+    current_manufacturer = get_object_or_404(Manufacturer, slug=slug)
     products = Product.objects.filter(manufacturer__exact=current_manufacturer).order_by(get_order_by_for_products(request))
     context = {'manufacturer': current_manufacturer, 'products': products}
     return render(request, 'manufacturer.html', context=context)
 
 
-def section(request, id):
+def section(request, slug):
     result = prerender(request)
     if result:
         return result
-    current_section = get_object_or_404(Section, pk=id)
+    current_section = get_object_or_404(Section, slug=slug)
     products = Product.objects.filter(section__exact=current_section).order_by(get_order_by_for_products(request))
     context = {'section': current_section, 'products': products}
     return render(request, 'section.html', context=context)
@@ -191,13 +229,14 @@ def order(request):
                     order_object.discount = discount
                 except Discount.DoesNotExist:
                     pass
-            order_object.customer = form.cleaned_data['name']
+            order_object.customer = form.cleaned_data['customer']
             order_object.phone = form.cleaned_data['phone']
             order_object.email = form.cleaned_data['email']
             order_object.address = form.cleaned_data['address']
             order_object.notice = form.cleaned_data['notice']
             order_object.save()
             add_order_lines(request, order_object)
+            add_user(form.cleaned_data['customer'], form.cleaned_data['email'])
             return HttpResponseRedirect(reverse('add_order'))
     else:
         form = OrderModelForm()
@@ -219,3 +258,42 @@ def add_order_lines(request, order_object):
 
 def add_order(request):
     return render(request, 'add_order.html')
+
+
+def add_user(name, email):
+    if User.objects.filter(email=email).exists() or User.objects.filter(username=email).exists():
+        return
+    password = User.objects.make_random_password()
+    user = User.objects.create_user(email, email, password)
+    group = Group.objects.get(name='Клиенты')
+    user.groups.add(group)
+    user.save()
+
+    text = get_template('registration/registration_email.html')
+    html = get_template('registration/registration_email.html')
+
+    context = {'username': email, 'password': password}
+
+    subject = 'Регистрация'
+    from_email = 'noreply@guitarstore.ru'
+    text_content = text.render(context)
+    html_content = html.render(context)
+    msg = EmailMultiAlternatives(subject, text_content, from_email, [email])
+    msg.attach_alternative(html_content, 'text/html')
+    msg.send()
+
+
+@login_required
+def orders(request):
+    user_orders = Order.objects.filter(email__exact=request.user.email)
+    return render(request, 'orders.html', context={'orders': user_orders})
+
+
+@permission_required('shop.can_set_status')
+def cancel_order(request, id):
+    order_object = get_object_or_404(Order, pk=id)
+    if order_object.email == request.user.email and order_object.status == 'NEW':
+        order_object.status = 'CNL'
+        order_object.save()
+
+    return HttpResponseRedirect(reverse('orders'))

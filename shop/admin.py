@@ -115,8 +115,7 @@ class OrderAdmin(admin.ModelAdmin):
             'fields': ('needs_delivery', 'discount', 'display_total_discount', 'address', 'notice',)
         }),
         ('Информация о клиенте', {
-            'fields': ('customer','display_customer_first_name', 'display_customer_last_name', 'display_customer_phone',
-                       'display_customer_email')
+            'fields': ('customer', 'phone', 'email')
         }),
         ('Доставка и оплата', {
             'fields': ('date_order', 'date_send', 'status',)

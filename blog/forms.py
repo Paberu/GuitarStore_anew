@@ -15,24 +15,35 @@ class CommentAddingForm(forms.Form):
 
 
 class ContactsForm(forms.ModelForm):
-    #
-    # name = forms.CharField()
-    # email = forms.CharField()
 
     class Meta:
         model = SupportMail
-        # fields = ['client_name', 'client_email', 'title', 'text']
-        exclude=['date_time']
+        exclude=['date_time', 'status']
         help_texts = {
             'name': 'Имя',
             'email': 'E-mail',
             'title': 'Тема',
             'text': 'Сообщение'
         }
-        # labels = {}
-        # widgets = {
-        #     'name': forms.TextInput(attrs={'placeholder': 'Имя'}),
-        #     'email': forms.EmailField(),
-        #     'title': forms.TextInput(attrs={'placeholder': 'Тема'}),
-        #     'text': forms.Textarea(attrs={'placeholder': 'Сообщение'}),
-        # }
+
+
+class RegisterForm(forms.Form):
+    first_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Имя'}))
+    last_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Фамилия'}))
+    email = forms.EmailField(widget=forms.TextInput(attrs={'placeholder': 'Email'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Пароль'}))
+    password_repeat = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Повторите пароль'}))
+
+    def clean_password(self):
+        data = self.cleaned_data['password']
+        if len(data) < 5:
+            raise ValidationError('Ваш пароль слишком простой')
+        return data
+
+    def clean(self):
+        if not self.errors:
+            password = self.cleaned_data['password']
+            password_repeat = self.cleaned_data['password_repeat']
+            if password != password_repeat:
+                raise ValidationError('Пароли должны совпадать')
+        return self.cleaned_data

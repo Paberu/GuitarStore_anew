@@ -64,7 +64,7 @@
 		</div>
 		<div id="content">
 			<div id="left">
-				<div id="menu">
+				<div class="menu">
 					<div class="header">
 						<h3>Разделы</h3>
 					</div>
@@ -78,6 +78,8 @@
 					</div>
 					<div class="bottom"></div>
 					<div class="clear"><p></p></div>
+				</div>
+				<div class="menu">
 					<div class="header">
 						<h3>Производители</h3>
 					</div>
@@ -89,6 +91,25 @@
 						{% endfor %}
 					</div>
 					<div class="bottom"></div>
+				</div>
+				<div class="menu">
+					<div class="header">
+						<h3>Пользователь</h3>
+					</div>
+					<div class="items">
+						{% if user.is_authenticated %}
+						<p>
+							<a href="{% url 'orders' %}">Заказы</a>
+						</p>
+						<p>
+								<a href="{% url 'logout' %}?next={{ request.path }}">Выход</a>
+							</p>
+						{% else %}
+							<p>
+								<a href="{% url 'login' %}?next={{ request.path }}">Вход</a>
+							</p>
+						{% endif %}
+					</div>
 				</div>
 			</div>
 			<div id="right">

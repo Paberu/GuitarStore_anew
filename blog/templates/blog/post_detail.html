@@ -18,19 +18,27 @@
             <div class="col-md-10 single-comment-right">
                 <h6><b> {{ comment.date_time }} / {{ comment.author }}</b></h6>
                 <p>{{ comment.text }}</p>
+                {% if perms.blog.can_delete_comments %}
+                    <p><a href="{% url 'blog:delete_comment' comment.id %}">Удалить комментарий</a></p>
+                {% endif %}
             </div>
             <div class="clearfix"> </div>
         </div>
         {% endfor %}
     </div>
     <div class="single-reply">
-        <h4>Написать комментарий</h4>
-        <form name="post" action="{% url 'blog:post' post.pk %}" method="post">
-            {% csrf_token %}
-            <input name="name" type="text" placeholder="{% if request.session.name %}{{ request.session.name }}{% else %}Имя{% endif %}" required="">
-            <input name="email" class="name" type="text" placeholder="{% if request.session.email %}{{ request.session.email }}{% else %}E-mail{% endif %}" required="">
-            <textarea name="comment" placeholder="Комментарий" required=""></textarea>
-            <input type="submit" value="Отправить">
-        </form>
+        {% if user.is_authenticated %}
+            <h4>Написать комментарий</h4>
+            <form name="post" action="{% url 'blog:post' post.pk %}" method="post">
+                {% csrf_token %}
+                <input name="name" type="text" placeholder="{{ user.first_name }} {{ user.last_name }}" required="" disabled>
+                <input name="email" class="name" type="text" placeholder="{{ user.email }}" required="" disabled>
+                <textarea name="comment" placeholder="Комментарий" required=""></textarea>
+                <input type="submit" value="Отправить">
+            </form>
+        {% else %}
+            <p>Прежде чем оставлять комментарий, сначала <a href="{% url 'login' %}?next={{ request.path }}">авторизуйтесь</a>.
+            Если Вы не зарегистрированы, может пройти <a href="{% url 'blog:register' %}?next={{ request.path }}">регистрацию.</a></p>
+        {% endif %}
     </div>
 {% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'blog_template.html' %}
+{% block title %}
+    <title> Зарегистрироваться </title>
+{% endblock %}
+{% block description %}
+    <meta name="description" content="Зарегистрироваться" />
+{% endblock %}
+{% block keywords %}
+    <meta name="keywords" content="зарегистрироваться" />
+{% endblock %}
+{% block content %}
+   <div class="contact">
+		<!-- container -->
+		<div class="container">
+			<div class="contact-grids">
+				{% if message %}
+					{% if message == 'recovery' %}
+						<p>Пользователь с таким адресом email уже существует в базе.
+							Попробуйте <a href="{% url 'password_reset' %}">восстановить</a> пароль.</p>
+					{% elif message == 'success' %}
+						<p>
+							Вы успешно зарегистрированы. Проверьте Ваш почтовый ящик.
+						</p>
+					{% endif %}
+				{% else %}
+					<div class="contact-form">
+						<h3>Заполните форму:</h3>
+						<form name="register_form" action="{% url 'blog:register' %}" method="POST">
+							{% csrf_token %}
+							<table>
+								<tr><td>{{ register_form.non_field_errors }}</td></tr>
+								<tr><td>{{ register_form.first_name }}
+								{{ register_form.last_name }}
+								{{ register_form.email }}
+								{{ register_form.password }} {{ register_form.password.errors }}
+								{{ register_form.password_repeat }}</td></tr>
+							</table>
+							<input type="submit" value="Отправить">
+						</form>
+					</div>
+				{% endif %}
+				<div class="clearfix"> </div>
+			</div>
+		</div>
+		<!-- //container -->
+	</div>
+	<!-- //contact -->
+{% endblock %}

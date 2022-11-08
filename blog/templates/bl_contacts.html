@@ -9,6 +9,9 @@
     <meta name="keywords" content="контакты, контакты гитарного магазина" />
 {% endblock %}
 {% block content %}
+	{% if answer %}
+		<p> {{ answer }} </p>
+	{% endif %}
    <div class="contact">
 		<!-- container -->
 		<div class="container">
@@ -103,12 +106,12 @@
 				</div>
 				<div class="contact-form">
 					<h3>Связаться с нами</h3>
-					<form>
+					<form name="contacts_form" action="{% url 'blog:contacts' %}" method="POST">
 						{% csrf_token %}
-						{{ form.name }}
-						{{ form.email }}
-						{{ form.title }}
-						{{ form.text }}
+						{{ contacts_form.name }}
+						{{ contacts_form.email }}
+						{{ contacts_form.title }}
+						{{ contacts_form.text }}
 						<input type="submit" value="Отправить">
 					</form>
 				</div>

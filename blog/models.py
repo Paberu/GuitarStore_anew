@@ -4,8 +4,10 @@ from django.db import models
 class Post(models.Model):
     title = models.CharField(max_length=100, verbose_name='Заголовок', blank=True)
     subtitle = models.CharField(max_length=100, verbose_name='Подзаголовок', blank=True)
+    slug = models.SlugField(max_length=40, verbose_name='Псевдоним', default='')
     date_time = models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления поста')
     author = models.CharField(max_length=100, verbose_name='Автор')
+    email = models.EmailField(max_length=100, verbose_name='E-mail')
     short_text = models.TextField(verbose_name='Текст для страницы со статьями')
     full_text = models.TextField(verbose_name='Полный текст поста')
 
@@ -13,6 +15,7 @@ class Post(models.Model):
         ordering = ['date_time']
         verbose_name = 'Статья'
         verbose_name_plural = 'Статьи'
+        permissions = (('can_delete_posts', 'Возможность удаления своих постов'),)
 
     def display_date(self):
         return self.date_time.date()
@@ -24,12 +27,14 @@ class Post(models.Model):
 class Comment(models.Model):
     date_time = models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления коммента')
     author = models.CharField(max_length=100, verbose_name='Автор')
+    email = models.EmailField(max_length=100, verbose_name='E-mail')
     text = models.TextField(max_length=200, verbose_name='Содержимое комментария')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, verbose_name='Пост')
 
     class Meta:
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
+        permissions = (('can_delete_comments', 'Возможность удаления своих комментариев'),)
 
     def __str__(self):
         return '{0} {1} оставил комментарий: {2}'.format(self.author, self.date_time, self.text)

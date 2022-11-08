@@ -15,12 +15,12 @@
 			{% block post_content %}
 			{% for post in posts %}
 			<div class="blog-left single-left">
-				<a href="{% url 'blog:post' post.pk %}">{{ post.title }}</a>
+				<a href="{% url 'blog:post' post.slug %}">{{ post.title }}</a>
 				{% load blog_filters %}
 				<p class="likes">{{ post.date_time|blog_date_time}}</p>
-				<a href="{% url 'blog:post' post.pk %}" class="b-img"><img src="images/b3.jpg" alt="" /></a>
+				<a href="{% url 'blog:post' post.slug %}" class="b-img"><img src="images/b3.jpg" alt="" /></a>
 				<p>{{ post.short_text }}</p>
-				<a href="{% url 'blog:post' post.pk %}" class="more">Читать далее...</a>
+				<a href="{% url 'blog:post' post.slug %}" class="more">Читать далее...</a>
 			</div>
 			{% endfor %}
 			{% endblock %}
