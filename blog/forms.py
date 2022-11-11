@@ -10,7 +10,7 @@ class SearchForm(forms.Form):
 
 class CommentAddingForm(forms.Form):
     name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Имя'}))
-    email = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Email'}))
+    email = forms.EmailField(widget=forms.TextInput(attrs={'placeholder': 'Email'}))
     comment = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Комментарий'}))
 
 
