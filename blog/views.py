@@ -1,13 +1,11 @@
-import transliterate
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User, Group
 from django.core.mail import EmailMultiAlternatives
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
-from django.http import HttpResponseRedirect, Http404, HttpResponse
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import get_template
-from django.urls import reverse
 from django.views import generic
 
 from blog.forms import SearchForm, ContactsForm, RegisterForm
@@ -16,7 +14,7 @@ from blog.models import Post, Comment, Photo, SupportMail
 
 def gallery(request):
     photos = Photo.objects.all().order_by('-date')[:12]
-    context ={'photos': photos}
+    context = {'photos': photos}
     return render(request, 'gallery.html', context=context)
 
 
@@ -26,16 +24,16 @@ def about(request):
 
 def blog_full(request):
     posts = Post.objects.all().order_by('-date_time')
-    for post in posts:
-        slug = transliterate.translit(post.title, reversed=True)
-        slug = slug.replace("'", '')
-        slug = slug.replace('?', '')
-        slug = slug.replace('!', '')
-        slug = slug.replace(',', '')
-        slug = slug.replace(' ', '-')
-        slug = slug.lower()
-        post.slug = slug
-        post.save()
+    # for post in posts:
+    #     slug = transliterate.translit(post.title, reversed=True)
+    #     slug = slug.replace("'", '')
+    #     slug = slug.replace('?', '')
+    #     slug = slug.replace('!', '')
+    #     slug = slug.replace(',', '')
+    #     slug = slug.replace(' ', '-')
+    #     slug = slug.lower()
+    #     post.slug = slug
+    #     post.save()
     page = request.GET.get('page', 1)
     paginator = Paginator(posts, 5)
     try:

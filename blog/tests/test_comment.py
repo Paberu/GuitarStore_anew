@@ -35,7 +35,7 @@ class CommentModelTest(TestCase):
         max_length = comment._meta.get_field('text').max_length
         self.assertEqual(max_length, 200)
 
-    def test_parrent_post(self):
+    def test_parent_post(self):
         comment = Comment.objects.get(id=1)
         post_id = comment.post.id
         self.assertEqual(post_id, 1)
